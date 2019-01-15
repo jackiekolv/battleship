@@ -12,17 +12,17 @@ class Fleet {
       }
     }
 
-    leftShip() {
+    shipLeftForPlace() {
       let count = 0;
       for (let ship of Object.values(this.ships)) {
-        count += ship.left;
+        count += ship.leftForPlace;
       }
       return count;
     }
 
     reset(){
       for (let ship of Object.values(this.ships)) {
-        ship.left = ship.total;
+        ship.leftForPlace = ship.total;
       }
     }
     

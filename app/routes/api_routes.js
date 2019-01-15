@@ -11,22 +11,46 @@ module.exports = function(app, db) {
     var ocean = new Ocean("pacific");
 
     app.get('/', (req, res) => {
-      res.json({ message: "debug", ocean: ocean.viewOcean(), left_ship: fleet.leftShip(), fleet: fleet });
+      res.json(
+          { 
+            message: "debug", 
+            oceanCombine: ocean.viewOcean(ocean.oceanCombine), 
+            shipLeftForPlace: fleet.shipLeftForPlace(), 
+            shipCountInOcean: ocean.ship_count,
+            fleet: fleet 
+          }
+        );
     });
 
     app.get('/reset', (req, res) => {
       ocean = new Ocean("pacific");
       fleet.reset();
-      res.json({ message: "Reset successfuled", ocean: ocean.viewOcean(), left_ship: fleet.leftShip(), fleet: fleet });
+      res.json(
+        { 
+          message: "Reset successfuled", 
+          ocean: ocean.viewOcean(), 
+          shipLeftForPlace: fleet.shipLeftForPlace(), 
+          shipCountInOcean: ocean.ship_count,
+          fleet: fleet 
+        }
+      );
     });
 
     app.post('/ship', (req, res) => {
-      var ship_type = req.body.ship_type;
+      var ship_type = req.body.ship_type.toLowerCase();
       var ship = fleet.ships[ship_type];
       var msg = ocean.ship(req.body.row, req.body.column, req.body.direction, ship);
       if(msg.startsWith("placed")){
         msg = msg + " " + ship.type;
-        res.json({ message: msg, ocean: ocean.viewOcean(), left_ship: fleet.leftShip(), fleet: fleet });
+        res.json( 
+          { 
+            message: msg, 
+            ocean: ocean.viewOcean(ocean.oceanDefender), 
+            shipLeftForPlace: fleet.shipLeftForPlace(), 
+            shipCountInOcean: ocean.ship_count,
+            fleet: fleet 
+          }
+        );
       }
       else{
         res.statusMessage = msg;
@@ -35,7 +59,14 @@ module.exports = function(app, db) {
     });
 
     app.post('/attack', (req, res) => {
-      res.json({ message: 'api/ship', req: req.body.msg });
+      var row = req.body.row;
+      var column = req.body.column;
+      var msg = "";
+      if(fleet.shipLeftForPlace() > 0){
+        msg = "unauthorized, place all ship first.";
+      }
+      msg = ocean.attack(row, column);
+      res.json({ message: msg, ocean: ocean.viewOcean(ocean.oceanAttacker) });
     });
 
   };
