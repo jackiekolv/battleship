@@ -1,16 +1,24 @@
 var _ = require('lodash');
 
+var mongoose     = require('mongoose');
+var Schema       = mongoose.Schema;
+var OceanLog     = require('../models/OceanLog');
+
 module.exports = 
 
 class Ocean {
     
     constructor(name) {
+        
         this.space_sign = '□';
         this.placed_sign = '■';
         this.hit_sign = 'H';
         this.miss_sign = 'M';
         this.postionIsKeyValueIsShip = new Map();
         this.ship_count = 0;
+
+        this.attack_count = 0;
+        this.miss_count = 0;
         this.oceanDefender = [
             ['□','□','□','□','□','□','□','□','□','□'],
             ['□','□','□','□','□','□','□','□','□','□'],
@@ -50,7 +58,7 @@ class Ocean {
     }
 
     ship(row, column, direction, ship){
-        var default_error_msg = "The ship placement does not allow or illegal.";
+        var default_error_msg = "Bad request: The ship placement does not allow or illegal.";
 
         if(ship.leftForPlace <= 0) return default_error_msg;
         var size = ship.size;
@@ -90,7 +98,7 @@ class Ocean {
         this.ship_count++;
         ship.leftForPlace--;
         postionIsKeyValueIsShip.forEach((value, key) => this.postionIsKeyValueIsShip.set(`${key}`, `${value.type}`));
-        return "placed";
+        return "placed " + ship.type;
     }
 
     isCloseToOtherOneByOne(rowArr, columnArr){
@@ -127,10 +135,11 @@ class Ocean {
     }
 
     viewOcean(ocean = this.oceanDefender){
-        var result = [[' ', 1,2,3,4,5,6,7,8,9,10]];
+        var result = [['  ', 1,2,3,4,5,6,7,8,9,10]];
         result[0] = result[0].join(' ');
         for(var i = 0; i < ocean.length; i++) {
-            result[i+1] = i+1 + ' ' + ocean[i].join(' ');
+            var rowNumber = i+1 < 10 ? " " + (i+1).toString() : i+1;
+            result[i+1] = rowNumber + ' ' + ocean[i].join(' ');
         }
         return result;
     }
@@ -141,33 +150,43 @@ class Ocean {
         var rowArr = row-1; 
         var columnArr = column-1;
         
-            
         if(this.ship_count <= 0){
             msg = "Game over";
         }
-        else if( [this.placed_sign, this.hit_sign].includes( this.oceanDefender[rowArr][columnArr] )){
+        else if( [this.miss_sign, this.hit_sign].includes(this.oceanAttacker[rowArr][columnArr])){
+            msg = "bad request";
+        }
+        else if( this.placed_sign == this.oceanDefender[rowArr][columnArr] ){
+            msg = "Hit";
+            this.attack_count++;
             this.oceanAttacker[rowArr][columnArr] = this.hit_sign;
             this.oceanDefender[rowArr][columnArr] = this.hit_sign;
-            if(this.placed_sign == this.oceanAttacker[rowArr][columnArr]){
-                msg = "Already hit";
-            }else{
-                msg = "Hit";
-                this.ship_count--;
-            }
             
-            if(this.ship_count <= 0){
-                msg = "Game over";
-            }
-            else if(this.hitAndNoMorePlacedSignInOceanCombine(rowArr, columnArr)){
+            if(this.hitAndNoMorePlacedSignInOceanCombine(rowArr, columnArr)){
+                this.ship_count--;
                 var ship_type = this.postionIsKeyValueIsShip.get( row + " " + column );
                 msg = "You just sank the " + ship_type;
+            }
+            if(this.ship_count <= 0){
+                msg = "Game over";
             }
         }else{
             this.oceanAttacker[rowArr][columnArr] = this.miss_sign;
             this.oceanDefender[rowArr][columnArr] = this.miss_sign;
             msg = "Miss";
+            this.miss_count++;            
         }
         return msg;
+    }
+
+    log(){
+        var oceanLog = new OceanLog();
+        oceanLog.oceanDefender = this.oceanDefender;
+        oceanLog.oceanAttacker = this.oceanAttacker;
+        oceanLog.oceanCombine = this.oceanCombine;
+        oceanLog.attack_count = this.attack_count;
+        oceanLog.miss_count = this.miss_count;
+        oceanLog.save();
     }
 
 }
