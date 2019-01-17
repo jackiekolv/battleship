@@ -8,3 +8,5 @@
 <p><strong>2. View game info</strong><br /><strong>Method: GET</strong><br /><strong>/api</strong></p>
 <p><br /><strong>2. Reset the game</strong><br /><strong>Method: GET</strong><br /><strong>/reset</strong></p>
 <p>&nbsp;</p>
+<p><strong>Local run</strong></p>
+<p>$ npm install<br />$ npm start</p>
