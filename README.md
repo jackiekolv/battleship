@@ -1,49 +1,10 @@
-# battleship
-Battleship game API
-
-Demo: https://radiant-reaches-55414.herokuapp.com/api
-
-Post man Import: https://www.getpostman.com/collections/ab867d3e8f19b6d55545
-
-Description
-
-<h2>1. Place a ship</h2>
-Method: POST
-/api/ship
-  <b>row</b>: 1-10
-  <b>column</b>: 1-10
-  <b>direction</b
-  <b>ship_type</b>
-    - battleship    total: 1, size: 4
-    - cruisers      total: 2, size: 3
-    - destroyers    total: 3, size: 2
-    - submarines    total: 4, size: 1
-<b>Example Request</b>
-{
-  "row": 1,
-  "column": 1,
-  "direction": "row",     
-  "ship_type": "cruisers"
-}
-
-<h2>2. Attack</h2>
-Method: POST
-/api/attack
-  * Must be placed all ship first.
-  Input the point to attack.
-  <b>row</b>: 1-10
-  <b>column</b>: 1-10
-<b>Example Request</b>
-{
-  "row": 1,
-  "column": 2
-}
-
-<h2>2. View game info</h2>
-Method: GET
-/api
-
-
-<h2>2. Reset the game</h2>
-Method: GET
-/reset
+<p>&nbsp;</p>
+<p><strong>Battleship game API</strong></p>
+<p><strong>Demo</strong>: https://radiant-reaches-55414.herokuapp.com/api</p>
+<p><strong>Post man Import</strong>: https://www.getpostman.com/collections/ab867d3e8f19b6d55545</p>
+<p><strong>Description</strong></p>
+<p><strong>1. Place a ship</strong><br /><strong>Method: POST</strong><br /><strong>/api/ship</strong><br /><strong>row</strong>: 1-10<br /><strong>column</strong>: 1-10<br /><strong>direction</strong>: "row" or "column"<br /><strong>ship_type</strong><br /> - battleship&nbsp; &nbsp; &nbsp; total: 1, size: 4<br /> - cruisers&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;total: 2, size: 3<br /> - destroyers&nbsp; &nbsp; &nbsp;total: 3, size: 2<br /> - submarines&nbsp; &nbsp; total: 4, size: 1<br /><strong>Example Request</strong><br />{<br />&nbsp; &nbsp; "row": 1,<br />&nbsp; &nbsp; "column": 1,<br />&nbsp; &nbsp; "direction": "row", <br />&nbsp; &nbsp; "ship_type": "cruisers"<br />}</p>
+<p><strong>2. Attack</strong><br /><strong>Method: POST</strong><br /><strong>/api/attack</strong><br /> * Must be placed all ship first.<br /> Input the point to attack.<br /><strong>row</strong>: 1-10<br /><strong>column</strong>&lt;/b&gt;: 1-10<br /><strong>Example Request</strong><br />{<br />&nbsp; &nbsp; "row": 1,<br />&nbsp; &nbsp; "column": 2<br />}</p>
+<p><strong>2. View game info</strong><br /><strong>Method: GET</strong><br /><strong>/api</strong></p>
+<p><br /><strong>2. Reset the game</strong><br /><strong>Method: GET</strong><br /><strong>/reset</strong></p>
+<p>&nbsp;</p>
